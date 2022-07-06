@@ -1,0 +1,7 @@
+databaseConfig:
+  host: bxjakti4xgzwktfgyplp-mysql.services.clever-cloud.com
+  database: bxjakti4xgzwktfgyplp
+  user: uhyqdu79zqb1cpty
+  password: 22aBEFRNOr5ZmJjC78H3
+  port: 3306
+
