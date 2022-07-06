@@ -8,10 +8,10 @@ from constants import constants
 from RawDataValidation import DataValidation
 
 class TrainValidation:
-    def __init__(self, path):
+    def __init__(self):
 
         self.appConfig = readYamlFile(constants.CONFIG_FILE_PATH)
-        self.validation = DataValidation(path)
+        self.validation = DataValidation()
 
         logging.basicConfig(filename=r"logs\train_validation_insertion\train_"+str(datetime.datetime.date()),
                             filemode='a',
