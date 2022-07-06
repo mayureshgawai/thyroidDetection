@@ -1,1 +1,1 @@
-from RawDataValidation.raw_data_validation import DataValidation
+from RawDataValidation.data_validation import DataValidation

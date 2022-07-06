@@ -7,7 +7,7 @@ import datetime
 
 # from flask_monitoringdashboard.main import app
 
-logging.basicConfig(filename=f'logs\main\main_{datetime.datetime.date()}' ,
+logging.basicConfig(filename=f'logs\main\main_{datetime.datetime.date()}',
                     filemode='a', level=logging.INFO,
                     format='%(asctime)s: %(levelname)s:: %(message)s')
 

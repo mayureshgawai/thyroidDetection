@@ -13,10 +13,11 @@ class TrainValidation:
         self.appConfig = readYamlFile(constants.CONFIG_FILE_PATH)
         self.validation = DataValidation()
 
-        logging.basicConfig(filename=r"logs\train_validation_insertion\train_"+str(datetime.datetime.date()),
+        logging.basicConfig(filename=r"logs\training\train_validation_insertion\train_"+str(datetime.datetime.date()),
                             filemode='a',
                             level=logging.INFO,
                             format='%(asctime)s: %(levelname)s:: %(message)s)')
+
 
     def trainValidationAndInsertion(self):
 
