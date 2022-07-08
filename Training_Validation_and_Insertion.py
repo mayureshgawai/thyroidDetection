@@ -44,9 +44,28 @@ class TrainValidation:
             # replacing all "?" and or improper string with None with dataset
             data = self.validation.replaceWithNone(data)
 
+            # "sex" is object column with string data in it, so we cannot convert its datatype directly
+            # we have to encode it first. We cannot directly encode it with None values in it. So we can use "apply()"
+            data = self.validation.handleObjectColumns(data)
+
+            # Removing outliers from "age column"
+            # Age should be between 10 and 90 only.
+            data = data[(data['age'] < 90) & (data['age'] > 10)]
+
+            # Encoding of the data
+            data  = self.validation.encodeColumns(data)
+
+            # handling missing values
             nullPresent = self.validation.checkForNanInDataset(data)
             if(nullPresent):
-                pass
+                # Applyig imputer
+                X_imputed, y = self.validation.impute(data)
+
+            y = y.reset_index()
+
+
+
+
 
 
 
