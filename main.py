@@ -4,10 +4,11 @@ import os
 from wsgiref import simple_server
 import logging
 import datetime
+from Training_Validation_and_Insertion import TrainValidation
 
 # from flask_monitoringdashboard.main import app
 
-logging.basicConfig(filename=f'logs\main\main_{datetime.datetime.date()}',
+logging.basicConfig(filename='logs/main/main_logs',
                     filemode='a', level=logging.INFO,
                     format='%(asctime)s: %(levelname)s:: %(message)s')
 
@@ -16,11 +17,17 @@ app =Flask(__name__)
 @app.route('/train', methods=['GET', 'POST'])
 def trainRoute():
     try:
-        path = request.json['folderPath']
-        trainobj = ""
+        logging.info("Training started")
+        # path = request.json['folderPath']
+        trainobj = TrainValidation()
+        trainobj.trainValidationAndInsertion()
+
+
+        logging.info("Training ends")
 
     except Exception as e:
-        return Response("Error Occcured! %s", e)
+        logging.error("Error occured while training", e)
+        # return Response("Error Occcured! %s", e)
 
 
 

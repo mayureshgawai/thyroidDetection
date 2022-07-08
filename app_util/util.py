@@ -4,7 +4,7 @@ from exception import AppException
 import sys
 import datetime
 
-logging.basicConfig(filename=r"logs\load_yaml\yaml_"+str(datetime.datetime.date()),
+logging.basicConfig(filename="logs/load_yaml/yamlCode_logs",
                             filemode='a',
                             level=logging.INFO,
                             format='%(asctime)s: %(levelname)s:: %(message)s)'
