@@ -31,10 +31,12 @@ class DataValidation:
         """
         try:
             checkNull = data.isnull().sum()
-            isNullPresent = False
 
             for nullCount in checkNull:
-                return True if(nullCount>0) else False
+                # return True if(nullCount>0) else False
+                if(nullCount>0):
+                    return True
+            return False
         except Exception as e:
             raise AppException(e, sys)
 
@@ -104,15 +106,26 @@ class DataValidation:
         # Converting wrongly converted values for binary columns
         NonBinaryColumns = constants.NON_BINARY_COLUMNS
         for col in X_imputed.columns:
-            if(X_imputed[col] in NonBinaryColumns):
+            if(col in NonBinaryColumns):
                 continue
 
-            if(X_imputed[col].unique() > 2):
+            if(len(X_imputed[col].unique()) > 2):
                 # X_imputed[(X_imputed[col] < 1) & (X_imputed[col] > 0)]
                 X_imputed1 = X_imputed[col].apply(lambda x: 1 if (x >= 0.6) else 0)
                 X_imputed[col] = X_imputed1
 
         return [X_imputed,y]
+
+
+
+    def checkForUnique(self, data):
+
+        columns = data.columns
+        for col in columns:
+            if(len(data[col].unique()) <= 1):
+                data.drop([col], axis=1, inplace=True)
+
+        return data
 
 
 

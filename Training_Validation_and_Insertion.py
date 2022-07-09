@@ -7,6 +7,7 @@ import os
 from constants import constants
 from RawDataValidation import DataValidation
 from data_from_database import MySqlDBConnect
+import pandas as pd
 
 class TrainValidation:
     def __init__(self):
@@ -34,10 +35,6 @@ class TrainValidation:
             # fetching all data from database
             data = self.dbConenct.getRawData(conncetion)
             # to check if database returned some data
-            if(data == None):
-                # raise AppException("Failed to create dataframe", sys)
-                raise Exception("Failed to create database")
-
             logging.info("Successfully retrieved data from database and created dataframe")
 
             logging.info("Moving to the data cleaning")
@@ -46,14 +43,22 @@ class TrainValidation:
 
             # "sex" is object column with string data in it, so we cannot convert its datatype directly
             # we have to encode it first. We cannot directly encode it with None values in it. So we can use "apply()"
+            # Replacing Female:0 and Male:1
             data = self.validation.handleObjectColumns(data)
 
             # Removing outliers from "age column"
             # Age should be between 10 and 90 only.
+            data['age'] = pd.to_numeric(data['age'])
             data = data[(data['age'] < 90) & (data['age'] > 10)]
+
+            # Removing columns with no unique values or None values
+
 
             # Encoding of the data
             data  = self.validation.encodeColumns(data)
+
+            # Checking for unqiue values in columns
+            data = self.validation.checkForUnique(data)
 
             # handling missing values
             nullPresent = self.validation.checkForNanInDataset(data)
@@ -62,9 +67,6 @@ class TrainValidation:
                 X_imputed, y = self.validation.impute(data)
 
             y = y.reset_index()
-
-
-
 
 
 
