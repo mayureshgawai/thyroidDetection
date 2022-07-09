@@ -28,6 +28,7 @@ class MySqlDBConnect:
         """
 
         try:
+            logging.info("Creating Database connection")
             databaseConfig = self.appConfig['databaseConfig']
             host = databaseConfig['host']
             database = databaseConfig['database']
@@ -36,7 +37,7 @@ class MySqlDBConnect:
 
             mydb = connect.connect(host=host, user=user,
                                    passwd=password, database=database)
-
+            logging.info("Created Database connection")
             return mydb
 
         except Exception as e:

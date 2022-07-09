@@ -8,6 +8,8 @@ from constants import constants
 from RawDataValidation import DataValidation
 from data_from_database import MySqlDBConnect
 import pandas as pd
+from sklearn.model_selection import train_test_split
+from Data_Clustering import Clustering
 
 class TrainValidation:
     def __init__(self):
@@ -15,6 +17,7 @@ class TrainValidation:
         self.appConfig = readYamlFile(constants.CONFIG_FILE_PATH)
         self.validation = DataValidation()
         self.dbConenct = MySqlDBConnect()
+        self.cluster = Clustering()
 
         logging.basicConfig(filename="logs/training/train_validation_insertion/train_logs",
                             filemode='a',
@@ -63,12 +66,23 @@ class TrainValidation:
             # handling missing values
             nullPresent = self.validation.checkForNanInDataset(data)
             if(nullPresent):
-                # Applyig imputer
+                # Applying imputer
                 X_imputed, y = self.validation.impute(data)
 
             y = y.reset_index()
+            if('index' in y.columns):
+                y.drop(['index'], axis=1, inplace=True)
 
+            logging.info("Data Cleaning Done!!")
 
+            logging.info("Data clustering")
+            y_kmeans = self.cluster.createClusters(X_imputed)
+            X_imputed['cluster'] = y_kmeans
+
+            listOfCluster = X_imputed['cluster'].unique()
+
+            for num in listOfCluster:
+                pass
 
 
         except Exception as e:

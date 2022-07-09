@@ -12,3 +12,5 @@ COLUMN_NAMES = ['age', 'sex', 'on_thyroxine', 'query_on_thyroxine',
        'FTI_measured', 'FTI', 'referral_source']
 
 NON_BINARY_COLUMNS = ['age', 'TSH', 'T3', 'TT4', 'T4U', 'FTI', 'referral_source']
+
+
