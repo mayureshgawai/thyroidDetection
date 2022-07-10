@@ -46,7 +46,8 @@ class ModelFinder:
             min_samples_leaf = decisionTreeParam.best_params_['min_samples_leaf']
 
             model_dt = DecisionTreeClassifier(criterion=criterion, splitter=splitter, max_depth=max_depth,
-                                              min_samples_split=min_samples_split, min_samples_leaf=min_samples_leaf)
+                                              min_samples_split=min_samples_split,
+                                              min_samples_leaf=min_samples_leaf)
 
 
             # SVC
@@ -63,9 +64,10 @@ class ModelFinder:
             logging.info("Adjusted R2 score for Decision tree: "+str(adjDtScore))
             logging.info("Adjusted R2 score for SVC: " + str(adjSvcScore))
 
-
             if(adjDtScore > adjSvcScore):
-                return
+                return "DecisionTree", model_dt
+            else:
+                return "SVC", model_svc
 
 
 

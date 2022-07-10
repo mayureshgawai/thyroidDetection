@@ -10,6 +10,8 @@ from data_from_database import MySqlDBConnect
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from Data_Clustering import Clustering
+from model_selection import ModelFinder
+from File_operations import FileOperations
 
 class TrainValidation:
     def __init__(self):
@@ -18,7 +20,7 @@ class TrainValidation:
         self.validation = DataValidation()
         self.dbConenct = MySqlDBConnect()
         self.cluster = Clustering()
-
+        self.fileOperations = FileOperations()
         logging.basicConfig(filename="logs/training/train_validation_insertion/train_logs",
                             filemode='a',
                             level=logging.INFO,
@@ -80,13 +82,18 @@ class TrainValidation:
             X_imputed['cluster'] = y_kmeans
 
             listOfCluster = X_imputed['cluster'].unique()
+            logging.info("Data Clustered in: "+ str(listOfCluster))
+
             df = X_imputed.copy()
             for num in listOfCluster:
                 dataSeperation = df[df['cluster'] == num]
                 features = df.drop(['cluster'], axis=1)
 
-                X_train, X_test, y_train, y_test = train_test_split(features, y, test_size=0.1, random_state=30)
+                X_train, X_test, y_train, y_test = train_test_split(features, y, test_size=0.2, random_state=30)
                 modelFinder = ModelFinder()
+                modelName, model = modelFinder.getBestModel(X_train, X_test, y_train, y_test)
+                modelName = modelName + str(num)
+                self.fileOperations.saveModel(modelName, model)
 
 
         except Exception as e:
