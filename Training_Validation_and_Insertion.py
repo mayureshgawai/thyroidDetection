@@ -80,9 +80,13 @@ class TrainValidation:
             X_imputed['cluster'] = y_kmeans
 
             listOfCluster = X_imputed['cluster'].unique()
-
+            df = X_imputed.copy()
             for num in listOfCluster:
-                pass
+                dataSeperation = df[df['cluster'] == num]
+                features = df.drop(['cluster'], axis=1)
+
+                X_train, X_test, y_train, y_test = train_test_split(features, y, test_size=0.1, random_state=30)
+                modelFinder = ModelFinder()
 
 
         except Exception as e:
