@@ -85,9 +85,14 @@ class TrainValidation:
             logging.info("Data Clustered in: "+ str(listOfCluster))
 
             df = X_imputed.copy()
+            df["Class"] = y
+
+            # df.to_csv("df.csv")
             for num in listOfCluster:
-                dataSeperation = df[df['cluster'] == num]
-                features = df.drop(['cluster'], axis=1)
+                dataSeperation = df[df['cluster'] == int(num)]
+                features = dataSeperation.drop(['cluster', 'Class'], axis=1)
+                y = dataSeperation['Class']
+                s = features.shape
 
                 X_train, X_test, y_train, y_test = train_test_split(features, y, test_size=0.2, random_state=30)
                 modelFinder = ModelFinder()

@@ -39,11 +39,11 @@ class ModelFinder:
         try:
             # Decision Tree
             decisionTreeParam = self.getBestParams(X_train, y_train, params_dt, DecisionTreeClassifier())
-            criterion = decisionTreeParam.best_params_['criterion']
-            splitter = decisionTreeParam.best_params_['splitter']
-            max_depth = decisionTreeParam.best_params_['max_depth']
-            min_samples_split = decisionTreeParam.best_params_['min_samples_split']
-            min_samples_leaf = decisionTreeParam.best_params_['min_samples_leaf']
+            criterion = decisionTreeParam['criterion']
+            splitter = decisionTreeParam['splitter']
+            max_depth = decisionTreeParam['max_depth']
+            min_samples_split = decisionTreeParam['min_samples_split']
+            min_samples_leaf = decisionTreeParam['min_samples_leaf']
 
             model_dt = DecisionTreeClassifier(criterion=criterion, splitter=splitter, max_depth=max_depth,
                                               min_samples_split=min_samples_split,
@@ -52,9 +52,9 @@ class ModelFinder:
 
             # SVC
             svcParams = self.getBestParams(X_train, y_train, params_svc, SVC())
-            kernel = svcParams.best_params_['kernel']
-            C = svcParams.best_params_['C']
-            gamma = svcParams.best_params_['gamma']
+            kernel = svcParams['kernel']
+            C = svcParams['C']
+            gamma = svcParams['gamma']
 
             model_svc = SVC(kernel=kernel, C=C, gamma=gamma)
 
