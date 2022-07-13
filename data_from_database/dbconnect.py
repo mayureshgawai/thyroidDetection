@@ -60,3 +60,22 @@ class MySqlDBConnect:
             return df
         except Exception as e:
             raise AppException(e, sys)
+
+
+    def getPredictData(self, connection):
+        """
+                Fetches all data from the prediction_data table
+                :return:
+                """
+        try:
+            cursor = connection.cursor()
+            query = "select * from prediction_data"
+
+            cursor.execute(query)
+            table_rows = cursor.fetchall()
+            # df = pd.DataFrame(table_rows)
+
+            df = pd.read_sql("select * from prediction_data", con=connection)
+            return df
+        except Exception as e:
+            raise AppException(e, sys)

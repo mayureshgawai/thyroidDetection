@@ -45,12 +45,20 @@ class ModelFinder:
             min_samples_split = decisionTreeParam['min_samples_split']
             min_samples_leaf = decisionTreeParam['min_samples_leaf']
 
+            criterion = 'entropy'
+            splitter = 'best'
+            max_depth = 7
+            min_samples_split = 2
+            min_samples_leaf = 2
+
+
             model_dt = DecisionTreeClassifier(criterion=criterion, splitter=splitter, max_depth=max_depth,
                                               min_samples_split=min_samples_split,
                                               min_samples_leaf=min_samples_leaf)
 
 
             # SVC
+            '''
             svcParams = self.getBestParams(X_train, y_train, params_svc, SVC())
             kernel = svcParams['kernel']
             C = svcParams['C']
@@ -67,7 +75,8 @@ class ModelFinder:
             if(adjDtScore > adjSvcScore):
                 return "DecisionTree", model_dt
             else:
-                return "SVC", model_svc
+                return "SVC", model_svc'''
+            return "DecisionTree", model_dt
 
 
 

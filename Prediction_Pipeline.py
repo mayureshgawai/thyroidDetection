@@ -13,36 +13,31 @@ from Data_Clustering import Clustering
 from model_selection import ModelFinder
 from File_operations import FileOperations
 
-class TrainValidation:
+class Prediction:
     def __init__(self):
-
         self.appConfig = readYamlFile(constants.CONFIG_FILE_PATH)
         self.validation = DataValidation()
         self.dbConenct = MySqlDBConnect()
         self.cluster = Clustering()
         self.fileOperations = FileOperations()
-        logging.basicConfig(filename="logs/training/train_validation_insertion/train_logs",
+        logging.basicConfig(filename="logs/prediction/prediction_pipeline/prediction_logs",
                             filemode='a',
                             level=logging.INFO,
                             format='%(asctime)s: %(levelname)s:: %(message)s)')
 
 
-    def trainValidationAndInsertion(self):
-
+    def predict(self):
         try:
-            """
-                This method is responsible for taking data from database, validating it according to requirement
-                and cleaning the data. Then apply clustering and training models.
-            """
-            logging.info("Getting data from database")
+            logging.info("Prediction Pipeline Started")
+
             # create database connection (MySql instance created on "clever cloud")
             conncetion = self.dbConenct.getConenction()
             # fetching all data from database
-            data = self.dbConenct.getRawData(conncetion)
-            # to check if database returned some data
+            data = self.dbConenct.getPredictData(conncetion)
+
             logging.info("Successfully retrieved data from database and created dataframe")
 
-            logging.info("Moving to the data cleaning")
+            logging.info("Performing some data cleaning before moving to the prediction")
             # replacing all "?" and or improper string with None with dataset
             data = self.validation.replaceWithNone(data)
 
@@ -58,46 +53,27 @@ class TrainValidation:
 
             # Removing columns with no unique values or None values
             # Encoding of the data
-            data  = self.validation.encodeColumns(data)
+            data = self.validation.encodeColumns(data)
 
             # Checking for unqiue values in columns
             data = self.validation.checkForUnique(data)
 
-            # handling missing values
             nullPresent = self.validation.checkForNanInDataset(data)
-            if(nullPresent):
+            if (nullPresent):
                 # Applying imputer
                 X_imputed, y = self.validation.impute(data)
 
             y = y.reset_index()
-            if('index' in y.columns):
+            if ('index' in y.columns):
                 y.drop(['index'], axis=1, inplace=True)
 
             logging.info("Data Cleaning Done!!")
 
             logging.info("Data clustering")
-            y_kmeans = self.cluster.createClusters(X_imputed)
-            X_imputed['cluster'] = y_kmeans
 
-            listOfCluster = X_imputed['cluster'].unique()
-            logging.info("Data Clustered in: "+ str(listOfCluster))
 
-            df = X_imputed.copy()
-            df["Class"] = y
 
-            # df.to_csv("df.csv")
-            for num in listOfCluster:
-                dataSeperation = df[df['cluster'] == int(num)]
-                features = dataSeperation.drop(['cluster', 'Class'], axis=1)
-                y = dataSeperation['Class']
-                s = features.shape
 
-                X_train, X_test, y_train, y_test = train_test_split(features, y, test_size=0.2, random_state=30)
-                modelFinder = ModelFinder()
-                modelName, model = modelFinder.getBestModel(X_train, X_test, y_train, y_test)
-                modelName = modelName + str(num)
-                self.fileOperations.saveModel(modelName, model)
-
-            logging.info("Training Pipeline End")
+            logging.info("Prediction Pipeline End")
         except Exception as e:
             raise AppException(e, sys)
