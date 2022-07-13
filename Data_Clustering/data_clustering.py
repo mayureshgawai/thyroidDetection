@@ -4,9 +4,14 @@ import sys
 from sklearn.cluster import KMeans
 from kneed import KneeLocator
 from File_operations import FileOperations
+from app_util import readYamlFile
+from constants import constants
+import pickle
 
 class Clustering:
     def __init__(self):
+
+        self.appConfig = readYamlFile(constants.CONFIG_FILE_PATH)
         self.fileop = FileOperations()
         logging.basicConfig(filename="logs/training/data_clustering/clustering_logs",
                             filemode='a',
@@ -57,10 +62,22 @@ class Clustering:
 
             kmeans = KMeans(n_clusters=knee, init="k-means++", random_state=20)
             y_kmeans = kmeans.fit_predict(data)
-            self.fileop.saveModel('Kmeans', kmeans)
+            self.fileop.saveModel(self.appConfig['path']['kmeans'], kmeans)
             logging.info("Completed data clustering")
 
             return y_kmeans
+
+        except Exception as e:
+            raise AppException(e, sys)
+
+    def cluster_prediction(self, data):
+        try:
+            model = self.appConfig['path']['kmeans']
+
+            with open('./'+model+'/'+"Kmeans.sav") as file:
+                model = pickle.load(file)
+
+
 
         except Exception as e:
             raise AppException(e, sys)

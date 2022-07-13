@@ -70,10 +70,11 @@ class Prediction:
             logging.info("Data Cleaning Done!!")
 
             logging.info("Data clustering")
+            y_kmeans = self.cluster.loadAndPredict(X_imputed, 'Kmeans')
 
 
 
 
-            logging.info("Prediction Pipeline End")
+            logging.info("Py_kmeans = self.cluster.createClus(X_imputed)rediction Pipeline End")
         except Exception as e:
             raise AppException(e, sys)
