@@ -80,6 +80,7 @@ class Clustering:
             clsuters = model.predict(data)
 
             data['cluster'] = clsuters
+            return  data
 
 
         except Exception as e:

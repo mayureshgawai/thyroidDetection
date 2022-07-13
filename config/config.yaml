@@ -4,6 +4,10 @@ databaseConfig:
   user: uhyqdu79zqb1cpty
   password: 22aBEFRNOr5ZmJjC78H3
   port: 3306
+  trainStructure: "raw_data_train"
+  predictFilesStructure: "prediction_data"
+  predictedStructure: "predicted_data"
 
 path:
+  models: 'models'
   kmeans: 'Kmeans'

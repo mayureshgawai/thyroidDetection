@@ -79,3 +79,15 @@ class MySqlDBConnect:
             return df
         except Exception as e:
             raise AppException(e, sys)
+
+    def loadToStructure(self, data, connection):
+
+        try:
+            logging.info('Inserting predicted data into "predicted_data" table')
+
+            tableName = self.appConfig['databaseConfig']['predictedStructure']
+            data.to_sql(con=connection, name=tableName, index=False)
+            logging.info('Data inseted into "predicted_data" table successfully')
+
+        except Exception as e:
+            raise AppException(e, sys)

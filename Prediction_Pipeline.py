@@ -12,14 +12,15 @@ from sklearn.model_selection import train_test_split
 from Data_Clustering import Clustering
 from model_selection import ModelFinder
 from File_operations import FileOperations
+from PredictionMethod import Prediction
 
 class Prediction:
     def __init__(self):
         self.appConfig = readYamlFile(constants.CONFIG_FILE_PATH)
-        self.validation = DataValidation()
         self.dbConenct = MySqlDBConnect()
         self.cluster = Clustering()
         self.fileOperations = FileOperations()
+        self.prediction = Prediction()
         logging.basicConfig(filename="logs/prediction/prediction_pipeline/prediction_logs",
                             filemode='a',
                             level=logging.INFO,
@@ -33,13 +34,13 @@ class Prediction:
             # create database connection (MySql instance created on "clever cloud")
             conncetion = self.dbConenct.getConenction()
             # fetching all data from database
-            data = self.dbConenct.getPredictData(conncetion)
+            data_main = self.dbConenct.getPredictData(conncetion)
 
             logging.info("Successfully retrieved data from database and created dataframe")
 
             logging.info("Performing some data cleaning before moving to the prediction")
             # replacing all "?" and or improper string with None with dataset
-            data = self.validation.replaceWithNone(data)
+            data = self.validation.replaceWithNone(data_main)
 
             # "sex" is object column with string data in it, so we cannot convert its datatype directly
             # we have to encode it first. We cannot directly encode it with None values in it. So we can use "apply()"
@@ -70,11 +71,20 @@ class Prediction:
             logging.info("Data Cleaning Done!!")
 
             logging.info("Data clustering")
-            y_kmeans = self.cluster.loadAndPredict(X_imputed, 'Kmeans')
+            data = self.cluster.cluster_prediction(X_imputed, 'Kmeans')
 
+            listOfNums = data['cluster'].unique()
 
+            for cluster in listOfNums:
+                dataSeperation = data[data['cluster'] == int(cluster)]
+                features = data.drop(['cluster'], axis=1)
 
+                predicted_data = self.prediction.prediction(features, cluster)
+                # loading predicted classes into main datatset, because we are not showing the main cleaned dataset
+                data_main['Class'] = predicted_data
 
-            logging.info("Py_kmeans = self.cluster.createClus(X_imputed)rediction Pipeline End")
+                self.dbConenct.loadToStructure(data_main, conncetion)
+
+            logging.info("Prediction Pipeline End")
         except Exception as e:
             raise AppException(e, sys)
