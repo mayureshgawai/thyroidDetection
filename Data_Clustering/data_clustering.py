@@ -77,6 +77,9 @@ class Clustering:
             with open('./'+model+'/'+"Kmeans.sav") as file:
                 model = pickle.load(file)
 
+            clsuters = model.predict(data)
+
+            data['cluster'] = clsuters
 
 
         except Exception as e:
