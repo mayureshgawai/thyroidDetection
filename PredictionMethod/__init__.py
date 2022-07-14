@@ -1,1 +1,1 @@
-from PredictionMethod.Prediction import Prediction
+from PredictionMethod.Prediction import Predictions

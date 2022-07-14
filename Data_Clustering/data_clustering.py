@@ -70,14 +70,15 @@ class Clustering:
         except Exception as e:
             raise AppException(e, sys)
 
-    def cluster_prediction(self, data):
+    def cluster_prediction(self, data, trashColumns):
         try:
             model = self.appConfig['path']['kmeans']
 
-            with open('./'+model+'/'+"Kmeans.sav") as file:
+            with open('./models/'+model+'/'+"Kmeans.sav", "rb") as file:
                 model = pickle.load(file)
 
-            clsuters = model.predict(data)
+            actualData = data.drop(columns=trashColumns)
+            clsuters = model.predict(actualData)
 
             data['cluster'] = clsuters
             return  data

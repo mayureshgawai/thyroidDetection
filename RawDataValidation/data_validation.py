@@ -16,7 +16,7 @@ class DataValidation:
     def __init__(self):
 
         self.appconfig = readYamlFile(constants.CONFIG_FILE_PATH)
-        logging.basicConfig(filename=r"logs\training\data_validation\data_validation_logs",
+        logging.basicConfig(filename=r"logs\training\data_validation\data_validation_logs.txt",
                             filemode='a',
                             level=logging.INFO,
                             format='%(asctime)s: %(levelname)s:: %(message)s)')
@@ -117,15 +117,60 @@ class DataValidation:
         return [X_imputed,y]
 
 
+    def predImpute(self, data):
+        try:
+
+            imputer = KNNImputer(n_neighbors=5, weights='uniform', missing_values=np.nan)
+            X_imputed = imputer.fit_transform(data)
+            X_imputed = pd.DataFrame(X_imputed)
+            X_imputed.columns = constants.PRED_COLUMNS
+
+            # Just to correct the imputed values, which created bt KNNImputer
+            NonBinaryColumns = constants.NON_BINARY_COLUMNS
+            for col in X_imputed.columns:
+                if (col in NonBinaryColumns):
+                    continue
+
+                if (len(X_imputed[col].unique()) > 2):
+                    X_imputed1 = X_imputed[col].apply(lambda x: 1 if (x >= 0.6) else 0)
+                    X_imputed[col] = X_imputed1
+
+            return X_imputed
+
+        except Exception as e:
+            raise AppException(e, sys)
+
+
 
     def checkForUnique(self, data):
 
+        '''
+            Deleting those columns who doesn't contain more than one uniquer value
+            :param data:
+            :return:
+        '''
+        trashColumns = []
         columns = data.columns
         for col in columns:
             if(len(data[col].unique()) <= 1):
+                trashColumns.append(col)
                 data.drop([col], axis=1, inplace=True)
+
+        with open("trashColumns.txt", "a") as file:
+            file.write(trashColumns)
 
         return data
 
+    # def checkForUniqueForPred(self, data):
+    #
+    #     columns = data.columns
+    #     trashColumns = []
+    #     for col in columns:
+    #         # we are keeping non contributing columns into the list, so we can delete it later at the tim of prediction
+    #         # We are foloowing this approach because we want to keep the column count same (just to insert in database otherwise it will shoe error)
+    #         if(len(data[col].unique()) <= 1):
+    #             trashColumns.append(col)
+    #
+    #     return trashColumns
 
 

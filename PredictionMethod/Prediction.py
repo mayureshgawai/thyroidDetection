@@ -6,16 +6,16 @@ from exception import AppException
 import sys
 import pickle
 
-class Prediction:
+class Predictions:
     def __init__(self):
 
         self.appConfig = readYamlFile(constants.CONFIG_FILE_PATH)
-        logging.basicConfig(filename="logs/prediction/prediction_pipeline/predictionMethod_logs",
+        logging.basicConfig(filename="logs/prediction/prediction_pipeline/predictionMethod_logs.txt",
                             filemode='a',
                             level=logging.INFO,
                             format='%(asctime)s: %(levelname)s:: %(message)s)')
 
-    def prediction(self, data, cluster):
+    def prediction(self, data, cluster, trashColumns):
 
         try:
 
@@ -28,7 +28,9 @@ class Prediction:
                         model = pickle.load(file)
                     break
 
-            y_pred = model.predict(data)
+            actualData = data.drop(columns = trashColumns)
+
+            y_pred = model.predict(actualData)
             return y_pred
 
         except Exception as e:

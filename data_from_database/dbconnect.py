@@ -13,7 +13,7 @@ class MySqlDBConnect:
     def __init__(self):
 
         self.appConfig = readYamlFile(constants.CONFIG_FILE_PATH)
-        logging.basicConfig(filename=r"logs/training/db_Connection/db_Connection_logs",
+        logging.basicConfig(filename=r"logs/training/db_Connection/db_Connection_logs.txt",
                             filemode='a',
                             level=logging.INFO,
                             format='%(asctime)s: %(levelname)s:: %(message)s)')

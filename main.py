@@ -5,10 +5,11 @@ from wsgiref import simple_server
 import logging
 import datetime
 from Training_Validation_and_Insertion import TrainValidation
+from Prediction_Pipeline import Prediction
 
 # from flask_monitoringdashboard.main import app
 
-logging.basicConfig(filename='logs/main/main_logs',
+logging.basicConfig(filename='logs/main/main_logs.txt',
                     filemode='a', level=logging.INFO,
                     format='%(asctime)s: %(levelname)s:: %(message)s')
 
@@ -29,6 +30,16 @@ def trainRoute():
         logging.error("Error occured while training", e)
         # return Response("Error Occcured! %s", e)
 
+@app.route('/predict', methods=['GET', 'POST'])
+def predictRoute():
+    try:
+
+        predObj = Prediction()
+        print(predObj)
+        predObj.predict()
+
+    except Exception as e:
+        logging.error("Error occured while prediction", e)
 
 
 

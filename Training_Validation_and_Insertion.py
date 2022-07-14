@@ -21,7 +21,7 @@ class TrainValidation:
         self.dbConenct = MySqlDBConnect()
         self.cluster = Clustering()
         self.fileOperations = FileOperations()
-        logging.basicConfig(filename="logs/training/train_validation_insertion/train_logs",
+        logging.basicConfig(filename="logs/training/train_validation_insertion/train_logs.txt",
                             filemode='a',
                             level=logging.INFO,
                             format='%(asctime)s: %(levelname)s:: %(message)s)')

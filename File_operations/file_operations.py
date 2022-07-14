@@ -8,7 +8,7 @@ import sys
 class FileOperations:
     def __init__(self):
         self.modelDirectory = "./models"
-        logging.basicConfig(filename="logs/training/file_handle/file_logs",
+        logging.basicConfig(filename="logs/training/file_handle/file_logs.txt",
                             filemode='a',
                             level=logging.INFO,
                             format='%(asctime)s: %(levelname)s:: %(message)s)')
